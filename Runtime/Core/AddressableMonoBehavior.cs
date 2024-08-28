@@ -85,7 +85,7 @@ namespace ActFitFramework.Standalone.AddressableSystem
                 return;
             }
             
-            var iconPath = "Assets/ActFit-Framework-Addressable/Editor/Assets/ActFitFrameworkIcon.png";
+            var iconPath = "Packages/ActFit-Framework-Addressable/Editor/Assets/ActFitFrameworkIcon.png";
             var icon = UnityEditor.AssetDatabase.LoadAssetAtPath<Texture2D>(iconPath);
             if (icon != null)
             {
