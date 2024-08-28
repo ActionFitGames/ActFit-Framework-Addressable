@@ -58,7 +58,6 @@ namespace ActFitFramework.Standalone.AddressableSystem
                 return;
             }
 
-
             try
             {
                 foreach (var labelReferenceString in Cache.GetLabelStrings)

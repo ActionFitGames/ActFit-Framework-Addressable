@@ -20,15 +20,15 @@ namespace ActFitFramework.Standalone.AddressableSystem
         private static readonly object LockObject = new();
 
         /// <summary> Async Operation Handles for assets (Release Overlap) </summary>
-        internal readonly Dictionary<AddressableKey, AsyncOperationHandle<Object>> AssetHandleMap = new();
+        internal readonly Dictionary<int, AsyncOperationHandle<Object>> AssetHandleMap = new();
         internal readonly Dictionary<string, IList<AsyncOperationHandle<Object>>> LabelAssetHandleMap = new();
 
         /// <summary> Mapping of resource locations by asset key and label </summary>
         internal readonly Dictionary<string, IList<ResourceKvp>> LabelAssetKeyLocationMap = new();
-        internal readonly Dictionary<AddressableKey, IResourceLocation> AssetKeyLocationMap = new();
+        internal readonly Dictionary<int, IResourceLocation> AssetKeyLocationMap = new();
 
         /// <summary> Mapping of instantiate async GameObject with addressableKey </summary>
-        internal readonly Dictionary<AddressableKey, IList<GameObject>> InstantiateAssetMap = new();
+        internal readonly Dictionary<int, IList<GameObject>> InstantiateAssetMap = new();
 
         /// <summary> Processor and Asset Provider </summary>
         private readonly IAssetProvider _assetProvider;

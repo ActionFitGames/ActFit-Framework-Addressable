@@ -73,7 +73,7 @@ namespace ActFitFramework.Standalone.AddressableSystem.Editor
         /// Loads the keys and their associated AddressableKey enums from a JSON file and returns a SerializedDictionary.
         /// </summary>
         /// <returns>A SerializedDictionary mapping primary keys to AddressableKey enums.</returns>
-        private SerializedDictionary<string, AddressableKey> GetKeysMappingCache()
+        private SerializedDictionary<string, int> GetKeysMappingCache()
         {
             if (!File.Exists(JsonAssetPath))
             {
@@ -83,14 +83,14 @@ namespace ActFitFramework.Standalone.AddressableSystem.Editor
 
             var jsonData = File.ReadAllText(JsonAssetPath);
             var entryDataMap = JsonConvert.DeserializeObject<SerializedDictionary<string, string>>(jsonData);
-            var newKvp = new SerializedDictionary<string, AddressableKey>();
+            var newKvp = new SerializedDictionary<string, int>();
 
             foreach (var kvp in entryDataMap)
             {
                 var primaryKey = kvp.Key;
                 var enumValue = kvp.Value;
 
-                if (Enum.TryParse(enumValue, out AddressableKey addressableKey))
+                if (Enum.TryParse(enumValue, out int addressableKey))
                 {
                     newKvp[primaryKey] = addressableKey;
                 }
