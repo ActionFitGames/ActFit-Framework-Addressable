@@ -1,5 +1,5 @@
 {
-  "name" : "com.actionfit.standalone.addressables",
+  "name" : "com.actionfit.addressables",
   "version" : "1.0.0",
   "displayName" : "ActionFit Standalone - Addressables",
   "description" : "The module in part of a standalone module related to Addressables within the game framework used by ‘ActionFit Inc.’",
