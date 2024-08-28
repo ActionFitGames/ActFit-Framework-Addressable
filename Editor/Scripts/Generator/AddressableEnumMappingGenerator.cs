@@ -13,7 +13,8 @@ namespace ActFitFramework.Standalone.AddressableSystem.Editor
     /// </summary>
     public sealed class AddressableEnumMappingGenerator : AbstractGenerator
     {
-        protected override string AssetPath { get; set; } = RootAssetPath + "Scripts/Addressables/";
+        private const string PackageRoot = "Packages/com.actionfit.addressable/";
+        protected override string AssetPath { get; set; } = PackageRoot + "Runtime/Structure/";
 
         /// <summary>
         /// Generates the enum mapping data from the existing key-value JSON data.
