@@ -8,5 +8,9 @@
     "name": "HuiSung Song",
     "email": "huisung@actionfit.kr",
     "url": "https://github.com/HuiSungz"
+  },
+  "dependencies": {
+    "com.unity.addressables": "1.21.21",
+    "com.unity.nuget.newtonsoft-json": "3.2.1"
   }
 }
