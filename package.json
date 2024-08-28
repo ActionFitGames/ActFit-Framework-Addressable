@@ -9,6 +9,15 @@
     "email": "huisung@actionfit.kr",
     "url": "https://github.com/HuiSungz"
   },
+  "scopedRegistries": [
+    {
+      "name": "OpenUPM",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "com.cysharp.unitask"
+      ]
+    }
+  ],
   "dependencies": {
     "com.cysharp.unitask": "2.5.5",
     "com.unity.addressables": "1.21.21",
