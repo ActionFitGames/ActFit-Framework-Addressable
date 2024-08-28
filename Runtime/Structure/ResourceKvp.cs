@@ -5,7 +5,7 @@ namespace ActFitFramework.Standalone.AddressableSystem
 {
     internal class ResourceKvp
     {
-        public AddressableKey AddressableKey;
+        public int AddressableKey;
         public IResourceLocation ResourceLocation;
     }
 }

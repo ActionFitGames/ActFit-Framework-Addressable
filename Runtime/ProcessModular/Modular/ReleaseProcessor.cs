@@ -57,7 +57,7 @@ namespace ActFitFramework.Standalone.AddressableSystem
         /// Releases an asset associated with a specific AddressableKey.
         /// </summary>
         /// <param name="addressableKey">The key identifying the asset to release.</param>
-        public void Release(AddressableKey addressableKey)
+        public void Release(int addressableKey)
         {
             if (_addressableSystem.AssetHandleMap.TryGetValue(addressableKey, out var handle))
             {
@@ -69,7 +69,7 @@ namespace ActFitFramework.Standalone.AddressableSystem
         /// Releases all GameObject instances associated with a specific AddressableKey.
         /// </summary>
         /// <param name="addressableKey">The key identifying the GameObject instances to release.</param>
-        public void ReleaseAllInstances(AddressableKey addressableKey)
+        public void ReleaseAllInstances(int addressableKey)
         {
             if (_addressableSystem.InstantiateAssetMap.TryGetValue(addressableKey, out var instances))
             {
@@ -145,7 +145,7 @@ namespace ActFitFramework.Standalone.AddressableSystem
         /// Releases all assets and associated GameObject instances for a specific AddressableKey.
         /// </summary>
         /// <param name="addressableKey">The key identifying the asset and its instances to release.</param>
-        public void ReleaseWithInstance(AddressableKey addressableKey)
+        public void ReleaseWithInstance(int addressableKey)
         {
             ReleaseAllInstances(addressableKey);
             Release(addressableKey);
@@ -170,7 +170,7 @@ namespace ActFitFramework.Standalone.AddressableSystem
         /// </summary>
         /// <param name="addressableKey">The key identifying the asset to release.</param>
         /// <param name="handle">The handle of the asset to release.</param>
-        private void ReleaseHandle(AddressableKey addressableKey, AsyncOperationHandle<Object> handle)
+        private void ReleaseHandle(int addressableKey, AsyncOperationHandle<Object> handle)
         {
             foreach (var label in _addressableSystem.LabelAssetHandleMap.Keys)
             {
@@ -212,7 +212,7 @@ namespace ActFitFramework.Standalone.AddressableSystem
         /// </summary>
         /// <param name="handle">The AsyncOperationHandle to search for.</param>
         /// <returns>The AddressableKey if found, otherwise null.</returns>
-        private AddressableKey GetAddressableKey(AsyncOperationHandle<Object> handle)
+        private int GetAddressableKey(AsyncOperationHandle<Object> handle)
         {
             foreach (var kvp in _addressableSystem.AssetHandleMap)
             {

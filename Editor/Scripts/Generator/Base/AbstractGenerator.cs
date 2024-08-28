@@ -43,7 +43,7 @@ namespace ActFitFramework.Standalone.AddressableSystem.Editor
 
             if (isEnumDefineSymbol)
             {
-                AddressableDefineSymbols.EnableUseActualKey();
+                // AddressableDefineSymbols.EnableUseActualKey();
             }
             
             AssetDatabase.Refresh();

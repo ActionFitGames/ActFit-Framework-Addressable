@@ -23,7 +23,7 @@ namespace ActFitFramework.Standalone.AddressableSystem
         /// Releases an asset associated with a specific AddressableKey.
         /// </summary>
         /// <param name="addressableKey">The key identifying the asset to release.</param>
-        void Release(AddressableKey addressableKey);
+        void Release(int addressableKey);
 
         /// <summary>
         /// Releases a specific GameObject instance.
@@ -35,7 +35,7 @@ namespace ActFitFramework.Standalone.AddressableSystem
         /// Releases all GameObject instances associated with a specific AddressableKey.
         /// </summary>
         /// <param name="addressableKey">The key identifying the GameObject instances to release.</param>
-        void ReleaseAllInstances(AddressableKey addressableKey);
+        void ReleaseAllInstances(int addressableKey);
 
         /// <summary>
         /// Releases all assets and associated GameObject instances for a given AssetLabelReference.
@@ -53,6 +53,6 @@ namespace ActFitFramework.Standalone.AddressableSystem
         /// Releases all assets and associated GameObject instances for a specific AddressableKey.
         /// </summary>
         /// <param name="addressableKey">The key identifying the asset and its instances to release.</param>
-        void ReleaseWithInstance(AddressableKey addressableKey);
+        void ReleaseWithInstance(int addressableKey);
     }
 }
