@@ -10,7 +10,6 @@
     "url": "https://github.com/HuiSungz"
   },
   "dependencies": {
-    "com.cysharp.unitask": "2.5.5",
     "com.unity.addressables": "1.21.21",
     "com.unity.nuget.newtonsoft-json": "3.2.1"
   },
