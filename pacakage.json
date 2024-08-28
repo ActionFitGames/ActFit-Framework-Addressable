@@ -1,0 +1,12 @@
+{
+  "name" : "com.actionfit.standalone.addressables",
+  "version" : "1.0.0",
+  "displayName" : "ActionFit Standalone - Addressables",
+  "description" : "The module in part of a standalone module related to Addressables within the game framework used by ‘ActionFit Inc.’",
+  "unity" : "2022.3",
+  "author" : {
+    "name": "HuiSung Song",
+    "email": "huisung@actionfit.kr",
+    "url": "https://github.com/HuiSungz"
+  }
+}
