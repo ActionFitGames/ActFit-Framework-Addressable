@@ -1,12 +1,7 @@
 {
   "name" : "com.actionfit.addressables",
-<<<<<<< Updated upstream
-  "version" : "0.0.2",
-  "displayName" : "ActionFit Standalone - Addressables",
-=======
   "version" : "0.0.3",
   "displayName" : "ActionFit-Standalone Addressables",
->>>>>>> Stashed changes
   "description" : "The module in part of a standalone module related to Addressables within the game framework used by ‘ActionFit Inc.’",
   "unity" : "2022.3",
   "author" : {

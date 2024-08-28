@@ -25,11 +25,7 @@ namespace ActFitFramework.Standalone.AddressableSystem.Editor
 
         private void LoadTitleImage()
         {
-<<<<<<< Updated upstream
-            var assetPath = "Assets/ActFit-Framework-Addressable/Editor/Assets/ActFitFrameworkTitle.png";
-=======
             var assetPath = "Packages/ActionFit-Standalone Addressables/Editor/Assets/ActFitFrameworkTitle.png";
->>>>>>> Stashed changes
 
             _titleImage = AssetDatabase.LoadAssetAtPath<Texture2D>(assetPath);
         }
