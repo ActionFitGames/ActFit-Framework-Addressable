@@ -20,7 +20,7 @@ namespace ActFitFramework.Standalone.AddressableSystem
         /// <typeparam name="T">The type of asset to load. Must not be a GameObject.</typeparam>
         /// <param name="addressableKey">The key to the addressable asset.</param>
         /// <returns>The loaded asset of type T, or null if the asset is not found or is of type GameObject.</returns>
-        public T GetAsset<T>(AddressableKey addressableKey) where T : Object
+        public T GetAsset<T>(int addressableKey) where T : Object
         {
             if (typeof(T) == typeof(GameObject))
             {
@@ -45,7 +45,7 @@ namespace ActFitFramework.Standalone.AddressableSystem
         /// <param name="rotation">The rotation to apply to the instantiated GameObject.</param>
         /// <param name="parent">The parent transform to attach the instantiated GameObject to (optional).</param>
         /// <returns>The instantiated GameObject.</returns>
-        public GameObject Instantiate(AddressableKey addressableKey, Vector3 position, Quaternion rotation, Transform parent = null)
+        public GameObject Instantiate(int addressableKey, Vector3 position, Quaternion rotation, Transform parent = null)
         {
             return InstantiateInternal(addressableKey, position, rotation, parent);
         }
@@ -57,7 +57,7 @@ namespace ActFitFramework.Standalone.AddressableSystem
         /// <param name="parent">The parent transform to attach the instantiated GameObject to.</param>
         /// <param name="instantiateInWorldSpace">Whether to instantiate the GameObject in world space.</param>
         /// <returns>The instantiated GameObject.</returns>
-        public GameObject Instantiate(AddressableKey addressableKey, Transform parent = null, bool instantiateInWorldSpace = false)
+        public GameObject Instantiate(int addressableKey, Transform parent = null, bool instantiateInWorldSpace = false)
         {
             return InstantiateInternal(addressableKey, Vector3.zero, Quaternion.identity, parent, instantiateInWorldSpace);
         }
@@ -72,7 +72,7 @@ namespace ActFitFramework.Standalone.AddressableSystem
         /// <param name="parent">The parent transform to attach the instantiated GameObject to.</param>
         /// <param name="instantiateInWorldSpace">Whether to instantiate the GameObject in world space.</param>
         /// <returns>The instantiated GameObject.</returns>
-        private GameObject InstantiateInternal(AddressableKey addressableKey, Vector3 position, Quaternion rotation, Transform parent, bool instantiateInWorldSpace = false)
+        private GameObject InstantiateInternal(int addressableKey, Vector3 position, Quaternion rotation, Transform parent, bool instantiateInWorldSpace = false)
         {
             if (!_addressableSystem.AssetHandleMap.ContainsKey(addressableKey))
             {

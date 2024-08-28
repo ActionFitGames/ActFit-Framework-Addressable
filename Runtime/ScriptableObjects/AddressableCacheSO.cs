@@ -24,11 +24,11 @@ namespace ActFitFramework.Standalone.AddressableSystem
         public List<string> LabelStrings;
         
         [SerializedDictionary("[NoEdit] Unique Composite Key", "[Enum] Addressable Key")]
-        public SerializedDictionary<string, AddressableKey> AssetKeysMap;
+        public SerializedDictionary<string, int> AssetKeysMap;
         
         /// <summary> Implements 'ICacheProvider' </summary>
         public List<string> GetLabelStrings => LabelStrings;
-        public Dictionary<string, AddressableKey> GetAssetKeysMap => AssetKeysMap;
+        public Dictionary<string, int> GetAssetKeysMap => AssetKeysMap;
 
         #endregion
 
