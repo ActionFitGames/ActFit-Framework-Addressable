@@ -20,6 +20,14 @@ namespace ActFitFramework.Standalone.AddressableSystem
             EditorPrefs.SetBool(PendingConfigGenerationKey, false);
             AssetDatabase.Refresh();
         }
+        
+        [MenuItem("ActFit/Addressables/[Crash Fixed] Force Resolve (Clear USE KEY Symbol)", priority = 99)]
+        public static void RemoveUseKeySymbol()
+        {
+            AddressableDefineSymbols.DisableUseActualKey();
+            AssetDatabase.Refresh();
+        }
+
 
         #endregion
     }

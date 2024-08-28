@@ -1,6 +1,7 @@
-
+using System;
 using System.Collections.Generic;
 using System.IO;
+using Cysharp.Threading.Tasks;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
@@ -22,10 +23,10 @@ namespace ActFitFramework.Standalone.AddressableSystem
         
         private const string EnumKeyGenerationFlag = "EnumKey_Generation_Flag";
         private const string ConfigGenerationFlag = "Config_Generation_Flag";
+
+        private bool _isProcessingComplete = false;
         
         #endregion
-
-
 
         #region Public Access
 
@@ -41,21 +42,34 @@ namespace ActFitFramework.Standalone.AddressableSystem
                 return;
             }
             
+            EditorApplication.update += OnEditorUpdate;
+
             GenerateProcess();
-            
-            if (isEnumDefineSymbol)
+            return;
+
+            void OnEditorUpdate()
             {
-                AddressableDefineSymbols.EnableUseActualKey();
+                if (_isProcessingComplete)
+                {
+                    if (isEnumDefineSymbol)
+                    {
+                        AddressableDefineSymbols.EnableUseActualKey();
+                    }
+                
+                    AssetDatabase.Refresh();
+                    EditorApplication.update -= OnEditorUpdate;
+                }
             }
-            
-            AssetDatabase.Refresh();
         }
 
         protected abstract void GenerateProcess();
 
+        protected void MarkProcessingComplete()
+        {
+            _isProcessingComplete = true;
+        }
+
         #endregion
-
-
 
         #region Protected Methods (Addressable Associated)
 
@@ -65,35 +79,37 @@ namespace ActFitFramework.Standalone.AddressableSystem
         /// </summary>
         /// <param name="assetEntries">List of AddressableAssetEntry objects.</param>
         /// <returns>Dictionary mapping internal IDs to addressable data, or null if an error occurs.</returns>
-        protected static Dictionary<string, string> GetAddressableDataMap(List<AddressableAssetEntry> assetEntries)
+        protected static async UniTask<Dictionary<string, string>> GetAddressableDataMapAsync(List<AddressableAssetEntry> assetEntries)
         {
             var addressableDataMap = new Dictionary<string, string>();
 
             foreach (var entry in assetEntries)
             {
-                Addressables.LoadResourceLocationsAsync(entry.address).WaitForCompletion();
+                var resourceLocations = await Addressables.LoadResourceLocationsAsync(entry.address).ToUniTask();
 
-                if (Addressables.LoadResourceLocationsAsync(entry.address).Result == null)
+                if (resourceLocations == null)
                 {
-                    return default;
+                    return null;
                 }
 
-                if (Addressables.LoadResourceLocationsAsync(entry.address).Result is not List<IResourceLocation> { Count: > 0 } locations)
+                foreach (var location in resourceLocations)
                 {
-                    continue;
-                }
-
-                foreach (var location in locations)
-                {
+                    Debug.Log(location.InternalId);
                     var internalID = location.InternalId;
                     var fileName = ConvertFileName(Path.GetFileName(internalID));
 
-                    if (string.IsNullOrEmpty(fileName) || !addressableDataMap.TryAdd(internalID, fileName))
+                    if (string.IsNullOrEmpty(internalID))
                     {
-                        Debug.LogError($"{entry.address} already exists. Ensure uniqueness.");
-                        return default;
+                        continue;
                     }
+                    
+                    addressableDataMap.TryAdd(internalID, fileName);
                 }
+            }
+
+            foreach (var kvp in addressableDataMap)
+            {
+                Debug.Log(kvp.Key + " , " + kvp.Value);
             }
 
             return addressableDataMap;
@@ -130,8 +146,6 @@ namespace ActFitFramework.Standalone.AddressableSystem
         }
 
         #endregion
-
-
 
         #region Protected Methods (Get And Utils)
 

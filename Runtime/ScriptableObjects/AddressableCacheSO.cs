@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using AYellowpaper.SerializedCollections;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.ResourceLocations;
 #if UNITY_EDITOR
 using System.Linq;
 using UnityEditor.AddressableAssets;
+using UnityEngine.ResourceManagement.ResourceLocations;
 #endif
 
 namespace ActFitFramework.Standalone.AddressableSystem
@@ -17,19 +16,28 @@ namespace ActFitFramework.Standalone.AddressableSystem
     /// as well as mappings between specific addressable keys and their resource locations.
     /// </summary>
     // [CreateAssetMenu(fileName = "AddressableCache", menuName = "ActFit/Addressables/CacheSO")]
-    public class AddressableCacheSO : ScriptableObject
+    public class AddressableCacheSO : ScriptableObject, ICacheProvider
     {
         #region Fields
         
-        [SerializeField] [TextArea] private string _description = "[어드레서블 데이터 캐시 컨피그 파일]\n" +
-                                                                  "런타임 리소스 비용을 최소화 하기 위함\n" +
-                                                                  "최신 데이터가 아닐 경우 로그 발행\n";
+#pragma warning disable CS0414 // 필드가 대입되었으나 값이 사용되지 않습니다
+        [SerializeField] [TextArea] private string _description = "Addressable IResourceLocation caching internalID\n" +
+#pragma warning restore CS0414 // 필드가 대입되었으나 값이 사용되지 않습니다
+                                                                  "  -- This is generate Enum 'AddressableKey'\n" +
+                                                                  "  -- Runtime, Enum Key Mapping to IResourceLocation\n";
 
-        [SerializedDictionary("AssetLabelReference", "[NoEdit] Internal ID (List)")]
-        public SerializedDictionary<AssetLabelReference, List<string>> LabelLocationsMap;
+        public List<string> LabelReferencesString;
         
-        [SerializedDictionary("Addressable Key", "[NoEdit] IResourceLocation")]
-        public SerializedDictionary<AddressableKey, string> AssetLocationMap;
+        [SerializedDictionary("AssetLabelReference String", "[NoEdit] Internal ID (List)")]
+        public SerializedDictionary<string, List<string>> LabelLocationsMap;
+        
+        [SerializedDictionary("[NoEdit] IResourceLocation Internal ID", "Addressable Key")]
+        public SerializedDictionary<string, AddressableKey> AssetLocationMap;
+
+
+        public List<string> GetLabelReferencesString => LabelReferencesString;
+        public Dictionary<string, List<string>> GetLabelLocationsMap => LabelLocationsMap;
+        public Dictionary<string, AddressableKey> GetAssetLocationsMap => AssetLocationMap;
 
         #endregion
 

@@ -52,13 +52,15 @@ namespace ActFitFramework.Standalone.AddressableSystem
             EnsureDirectoryExists(AssetPath);
 
             var cachedSO = CreateAddressableCacheSO();
-            var allLabels = GetAddressableLabels();
+            var allLabels = GetAddressableLabelReferences();
             var keyPair = AddressablePairFactory.GetAddressableKeysMap();
-            var labelLocationMap = new SerializedDictionary<AssetLabelReference, List<string>>();
-            var assetLocationMap = new SerializedDictionary<AddressableKey, string>();
+            var labelLocationMap = new SerializedDictionary<string, List<string>>();
+            var assetLocationMap = new SerializedDictionary<string, AddressableKey>();
+            cachedSO.LabelReferencesString.Clear();
             
             foreach (var labelReference in allLabels)
             {
+                cachedSO.LabelReferencesString.Add(labelReference.labelString);
                 var resourceLocations = GetResourceLocations(labelReference);
                 if (resourceLocations is not { Count: > 0 })
                 {
@@ -74,10 +76,10 @@ namespace ActFitFramework.Standalone.AddressableSystem
                     }
 
                     internalIDs.Add(location.InternalId); 
-                    assetLocationMap.TryAdd(addressableKey, location.InternalId);
+                    assetLocationMap.TryAdd(location.InternalId, addressableKey);
                 }
 
-                labelLocationMap[labelReference] = internalIDs;
+                labelLocationMap[labelReference.labelString] = internalIDs;
             }
 
             cachedSO.LabelLocationsMap = labelLocationMap;
@@ -118,10 +120,10 @@ namespace ActFitFramework.Standalone.AddressableSystem
         /// Converts each label into an AssetLabelReference for use in caching.
         /// </summary>
         /// <returns>Returns a list of AssetLabelReference objects.</returns>
-        private List<AssetLabelReference> GetAddressableLabels()
+        public static List<AssetLabelReference> GetAddressableLabelReferences()
         {
-            var labels = Settings.GetLabels();
-            return labels.Select(label => new AssetLabelReference { labelString = label }).ToList();
+            var labels = Settings.GetLabels(); // Assuming Settings.GetLabels() returns a List<string>
+            return labels.Select(label => new AssetLabelReference() { labelString = label }).ToList();
         }
 
         /// <summary>

@@ -21,7 +21,13 @@ namespace ActFitFramework.Standalone.AddressableSystem
 
         static AddressablePostProcessor()
         {
-            Debug.Log("[AddressablePostProcessor] Constructor called, subscribing events");
+            if (!AddressableSettingSO.Instance.IsAutoUpdate)
+            {
+                Debug.LogWarning("[AddressablePostProcessor] Auto-update disabled, you can manually updated.");
+                return;
+            }
+            
+            Debug.Log("[AddressablePostProcessor] Constructor called, PostProcess enabled.");
             
             var addressableSettings = AddressableAssetSettingsDefaultObject.Settings;
             if (addressableSettings)
@@ -30,14 +36,14 @@ namespace ActFitFramework.Standalone.AddressableSystem
             }
 
             // 스크립트가 로드될 때 혹시 남아있는 플래그가 있으면 처리
-            if (EditorPrefs.GetBool(PendingConfigGenerationKey, false))
-            {
-                EditorApplication.delayCall += () =>
-                {
-                    AddressableConfigGenerator.GenerateLocationCachedData();
-                    EditorPrefs.SetBool(PendingConfigGenerationKey, false);
-                };
-            }
+            // if (EditorPrefs.GetBool(PendingConfigGenerationKey, false))
+            // {
+            //     EditorApplication.delayCall += () =>
+            //     {
+            //         AddressableConfigGenerator.GenerateLocationCachedData();
+            //         EditorPrefs.SetBool(PendingConfigGenerationKey, false);
+            //     };
+            // }
         }
 
         #endregion
@@ -55,8 +61,17 @@ namespace ActFitFramework.Standalone.AddressableSystem
         /// <param name="obj">The object involved in the modification.</param>
         private static void OnAddressableSettingsModified(AddressableAssetSettings settings, AddressableAssetSettings.ModificationEvent evt, object obj)
         {
-            if (evt != AddressableAssetSettings.ModificationEvent.EntryModified)
+            if (evt != AddressableAssetSettings.ModificationEvent.EntryModified
+                && evt != AddressableAssetSettings.ModificationEvent.LabelAdded
+                && evt != AddressableAssetSettings.ModificationEvent.LabelRemoved)
             {
+                return;
+            }
+
+            if (evt is AddressableAssetSettings.ModificationEvent.LabelAdded or AddressableAssetSettings.ModificationEvent.LabelRemoved)
+            {
+                AddressableConfigGenerator.GenerateLocationCachedData();
+                AssetDatabase.Refresh();
                 return;
             }
             

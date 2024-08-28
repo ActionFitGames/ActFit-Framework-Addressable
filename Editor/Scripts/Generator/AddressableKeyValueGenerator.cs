@@ -1,4 +1,3 @@
-
 using System.IO;
 using Newtonsoft.Json;
 using UnityEditor;
@@ -18,9 +17,7 @@ namespace ActFitFramework.Standalone.AddressableSystem
         private const string AssetPath = "Assets/Game/Data/Addressables";
 
         #endregion
-        
-        
-        
+
         #region Menu Item
 
         [MenuItem("ActFit/Addressables/[Generate] Key Value Data with JSON (Initialize)", priority = 1)]
@@ -31,19 +28,18 @@ namespace ActFitFramework.Standalone.AddressableSystem
         }
 
         #endregion
-        
-        
-        
+
         #region Protected Methods
 
-        protected override void GenerateProcess()
+        protected override async void GenerateProcess()
         {
             var addressableEntries = GetAddressableAssetEntries();
-            var addressableDataMap = GetAddressableDataMap(addressableEntries);
+            var addressableDataMap = await GetAddressableDataMapAsync(addressableEntries);
 
             if (addressableDataMap == null)
             {
                 Debug.LogError("Addressable Data Map is null. Check AddressableGroup.");
+                MarkProcessingComplete();
                 return;
             }
 
@@ -51,9 +47,10 @@ namespace ActFitFramework.Standalone.AddressableSystem
 
             var savePath = Path.Combine(AssetPath, "AddressableKeyValueData.json");
             var json = JsonConvert.SerializeObject(addressableDataMap, Formatting.Indented);
-            File.WriteAllText(savePath, json);
+            await File.WriteAllTextAsync(savePath, json);
 
             Debug.Log($"Addressables JSON saved to {savePath}");
+            MarkProcessingComplete();
         }
 
         #endregion
