@@ -5,8 +5,7 @@ namespace ActFitFramework.Standalone.AddressableSystem
 {
     public interface ICacheProvider
     {
-        public List<string> GetLabelReferencesString { get; }
-        public Dictionary<string, List<string>> GetLabelLocationsMap { get; }
-        public Dictionary<string, AddressableKey> GetAssetLocationsMap { get; }     
+        public List<string> GetLabelStrings { get; }
+        public Dictionary<string, AddressableKey> GetAssetKeysMap { get; }     
     }
 }

@@ -23,7 +23,7 @@ namespace ActFitFramework.Standalone.AddressableSystem
         /// <summary>
         /// Loads resource locations asynchronously based on the given label reference and type.
         /// </summary>
-        /// <param name="labelReference">The label reference to load locations for.</param>
+        /// <param name="labelReferenceString">The label reference to load locations for.</param>
         /// <param name="type">The type of resources to filter by (optional).</param>
         /// <returns>A list of resource locations associated with the label.</returns>
         public async UniTask<IList<IResourceLocation>> LoadLocationsAsync(string labelReferenceString, Type type = null)

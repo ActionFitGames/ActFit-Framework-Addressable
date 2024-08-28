@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ActFitFramework.Standalone.AddressableSystem
 {
-    public class AddressableMonoBehavior : MonoBehaviour
+    internal class AddressableMonoBehavior : MonoBehaviour
     {
         #region Fields
         
@@ -61,7 +61,7 @@ namespace ActFitFramework.Standalone.AddressableSystem
 
             try
             {
-                foreach (var labelReferenceString in Cache.GetLabelReferencesString)
+                foreach (var labelReferenceString in Cache.GetLabelStrings)
                 {
                     await locationProcessor.LoadLocationsAsync(labelReferenceString);
                 }

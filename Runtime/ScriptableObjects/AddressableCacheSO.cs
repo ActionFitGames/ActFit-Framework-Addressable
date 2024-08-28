@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using AYellowpaper.SerializedCollections;
 using UnityEngine;
+using UnityEngine.Serialization;
 #if UNITY_EDITOR
 using System.Linq;
 using UnityEditor.AddressableAssets;
@@ -25,19 +26,15 @@ namespace ActFitFramework.Standalone.AddressableSystem
 #pragma warning restore CS0414 // 필드가 대입되었으나 값이 사용되지 않습니다
                                                                   "  -- This is generate Enum 'AddressableKey'\n" +
                                                                   "  -- Runtime, Enum Key Mapping to IResourceLocation\n";
-
-        public List<string> LabelReferencesString;
         
-        [SerializedDictionary("AssetLabelReference String", "[NoEdit] Internal ID (List)")]
-        public SerializedDictionary<string, List<string>> LabelLocationsMap;
+        public List<string> LabelStrings;
         
-        [SerializedDictionary("[NoEdit] IResourceLocation Internal ID", "Addressable Key")]
-        public SerializedDictionary<string, AddressableKey> AssetLocationMap;
-
-
-        public List<string> GetLabelReferencesString => LabelReferencesString;
-        public Dictionary<string, List<string>> GetLabelLocationsMap => LabelLocationsMap;
-        public Dictionary<string, AddressableKey> GetAssetLocationsMap => AssetLocationMap;
+        [SerializedDictionary("[NoEdit] Unique Composite Key", "[Enum] Addressable Key")]
+        public SerializedDictionary<string, AddressableKey> AssetKeysMap;
+        
+        /// <summary> Implements 'ICacheProvider' </summary>
+        public List<string> GetLabelStrings => LabelStrings;
+        public Dictionary<string, AddressableKey> GetAssetKeysMap => AssetKeysMap;
 
         #endregion
 

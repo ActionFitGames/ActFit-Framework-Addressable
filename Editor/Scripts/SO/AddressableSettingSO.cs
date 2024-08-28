@@ -8,34 +8,6 @@ namespace ActFitFramework.Standalone.AddressableSystem
     {
         #region Fields
 
-        private static AddressableSettingSO _sInstance;
-
-        public static AddressableSettingSO Instance
-        {
-            get
-            {
-                if (_sInstance)
-                {
-                    return _sInstance;
-                }
-
-#if UNITY_EDITOR
-                if (!_sInstance)
-                {
-                    _sInstance = AssetDatabase.LoadAssetAtPath<AddressableSettingSO>("Assets/AddressableSystemSetting.asset");
-                }
-                
-                if (!_sInstance)
-                {
-                    AddressablePostInitializer.ForceInstantiate();
-                }
-#endif
-                
-
-                return _sInstance;
-            }
-        }
-
         [Header("Debug Settings")] 
         [SerializeField] private ExceptionHandleTypes _exceptionHandleType = ExceptionHandleTypes.Log;
         [SerializeField] private bool _isDebug;
@@ -59,7 +31,6 @@ namespace ActFitFramework.Standalone.AddressableSystem
 
         private void OnEnable()
         {
-            _sInstance = this;
             _previousIsDebug = _isDebug;
             _previousIsAutoUpdate = IsAutoUpdate;
         }

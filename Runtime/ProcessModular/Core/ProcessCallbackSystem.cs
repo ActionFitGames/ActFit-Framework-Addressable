@@ -59,7 +59,7 @@ namespace ActFitFramework.Standalone.AddressableSystem
             }
     
             var cacheProvider = AddressableMonoBehavior.Cache;
-            var cacheAssetLocation = cacheProvider.GetAssetLocationsMap;
+            var cacheAssetLocation = cacheProvider.GetAssetKeysMap;
     
             _addressableSystem.LabelLocationMap[labelKey] = resourceLocations;
 
