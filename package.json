@@ -9,17 +9,8 @@
     "email": "huisung@actionfit.kr",
     "url": "https://github.com/HuiSungz"
   },
-  "scopedRegistries": [
-    {
-      "name": "OpenUPM",
-      "url": "https://package.openupm.com",
-      "scopes": [
-        "com.cysharp.unitask"
-      ]
-    }
-  ],
   "dependencies": {
-    "com.cysharp.unitask": "2.5.5",
+    "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
     "com.unity.addressables": "1.21.21",
     "com.unity.nuget.newtonsoft-json": "3.2.1"
   }
