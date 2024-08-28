@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEditor.AddressableAssets.Settings;
 using UnityEngine;
 
-namespace ActFitFramework.Standalone.AddressableSystem
+namespace ActFitFramework.Standalone.AddressableSystem.Editor
 {
     /// <summary>
     /// Generates a JSON file mapping addressable asset keys to enum-compatible keys.

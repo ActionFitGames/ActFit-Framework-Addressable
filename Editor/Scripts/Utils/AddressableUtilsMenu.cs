@@ -1,7 +1,7 @@
 
 using UnityEditor;
 
-namespace ActFitFramework.Standalone.AddressableSystem
+namespace ActFitFramework.Standalone.AddressableSystem.Editor
 {
     /// <summary>
     /// Provides utility menu items for the ActFitFramework, specifically for managing Addressable system operations.

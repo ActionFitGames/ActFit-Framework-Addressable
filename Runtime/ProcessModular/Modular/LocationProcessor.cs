@@ -11,7 +11,7 @@ namespace ActFitFramework.Standalone.AddressableSystem
     /// Handles loading of resource locations associated with specific asset labels.
     /// This class provides asynchronous methods to load and manage resource locations using Addressables.
     /// </summary>
-    public class LocationProcessor : ILocationProcessor
+    internal class LocationProcessor : ILocationProcessor
     {
         private readonly ProcessCallbackSystem _processCallbackSystem;
         

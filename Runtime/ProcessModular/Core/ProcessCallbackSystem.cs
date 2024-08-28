@@ -1,7 +1,6 @@
 
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.AddressableAssets.ResourceLocators;
 using UnityEngine.ResourceManagement.ResourceLocations;
 
@@ -59,36 +58,30 @@ namespace ActFitFramework.Standalone.AddressableSystem
             }
     
             var cacheProvider = AddressableMonoBehavior.Cache;
-            var cacheAssetLocation = cacheProvider.GetAssetKeysMap;
-    
-            _addressableSystem.LabelLocationMap[labelKey] = resourceLocations;
+            var cacheAssetKeysMap = cacheProvider.GetAssetKeysMap;
 
-            // 주요 리소스(GameObject) 우선 처리
-            foreach (var location in resourceLocations)
+            if (!_addressableSystem.LabelAssetKeyLocationMap.ContainsKey(labelKey))
             {
-                if (location.ResourceType != typeof(GameObject))
-                {
-                    continue;
-                }
-                
-                if (cacheAssetLocation.TryGetValue(location.InternalId, out var addressableKey))
-                {
-                    _addressableSystem.KeyLocationMap[addressableKey] = location;
-                }
+                _addressableSystem.LabelAssetKeyLocationMap[labelKey] = new List<ResourceKvp>();
             }
-
-            // 나머지 리소스 처리
-            foreach (var location in resourceLocations)
+            
+            foreach (var resourceLocation in resourceLocations)
             {
-                if (location.ResourceType == typeof(GameObject))
+                var primaryKey = $"{resourceLocation.ResourceType}{resourceLocation.PrimaryKey}";
+
+                if (!cacheAssetKeysMap.TryGetValue(primaryKey, out var addressableKey))
                 {
                     continue;
                 }
                 
-                if (cacheAssetLocation.TryGetValue(location.InternalId, out var addressableKey))
+                var resourceKvp = new ResourceKvp
                 {
-                    _addressableSystem.KeyLocationMap.TryAdd(addressableKey, location);
-                }
+                    AddressableKey = addressableKey,
+                    ResourceLocation = resourceLocation
+                };
+
+                _addressableSystem.LabelAssetKeyLocationMap[labelKey].Add(resourceKvp);
+                _addressableSystem.AssetKeyLocationMap.TryAdd(addressableKey, resourceLocation);
             }
 
             onSucceeded?.Invoke();

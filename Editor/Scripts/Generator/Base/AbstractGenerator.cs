@@ -7,7 +7,7 @@ using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
 using UnityEngine;
 
-namespace ActFitFramework.Standalone.AddressableSystem
+namespace ActFitFramework.Standalone.AddressableSystem.Editor
 {
     /// <summary>
     /// Abstract base class for generating addressable-related assets and data. 

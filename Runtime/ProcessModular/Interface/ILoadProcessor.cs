@@ -1,5 +1,6 @@
 
 using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine.AddressableAssets;
 using Object = UnityEngine.Object;
@@ -8,10 +9,12 @@ namespace ActFitFramework.Standalone.AddressableSystem
 {
     public interface ILoadProcessor
     {
-        UniTask LoadAssetsAsync<T>(AssetLabelReference labelReference
-            , Action<float> onProgress = null, Action<T> onCallbackLoaded = null, Action onCallbackCompleted = null) where T : Object;
+        UniTask LoadAssetsAsync(AssetLabelReference labelReference
+            , Action<float> onProgress = null, Action<Object> onCallbackLoaded = null,
+            Action onCallbackCompleted = null);
 
-        UniTask LoadAssetAsync<T>(string key
-            , Action<float> onProgress = null, Action<T> onCallbackLoaded = null, Action onCallbackCompleted = null) where T : Object;
+        UniTask LoadAssetsAsync(List<AssetLabelReference> labelReferences
+            , Action<float> onProgress = null, Action<Object> onCallbackLoaded = null,
+            Action onCallbackCompleted = null);
     }
 }

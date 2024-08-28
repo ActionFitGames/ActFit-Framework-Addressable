@@ -1,3 +1,4 @@
+
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
@@ -9,170 +10,132 @@ namespace ActFitFramework.Standalone.AddressableSystem
 {
     internal class LoadProcessor : ILoadProcessor
     {
-        private AddressableSystem _addressableSystem;
+        private readonly AddressableSystem _addressableSystem;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LoadProcessor"/> class.
+        /// </summary>
+        /// <param name="addressableSystem">The addressable system instance to use for loading assets.</param>
         internal LoadProcessor(AddressableSystem addressableSystem)
         {
             _addressableSystem = addressableSystem;
         }
 
-        #region Load Asset - Multiple(s)
-
-        public async UniTask LoadAssetsAsync<T>(AssetLabelReference labelReference
+        /// <summary>
+        /// Asynchronously loads assets based on a single AssetLabelReference.
+        /// Provides progress updates and invokes callbacks when assets are loaded and completed.
+        /// </summary>
+        /// <param name="labelReference">The label reference identifying the assets to load.</param>
+        /// <param name="onProgress">Callback to invoke with the loading progress (0 to 1).</param>
+        /// <param name="onCallbackLoaded">Callback to invoke when an asset is loaded.</param>
+        /// <param name="onCallbackCompleted">Callback to invoke when all assets are loaded.</param>
+        public async UniTask LoadAssetsAsync(AssetLabelReference labelReference
             , Action<float> onProgress = null
-            , Action<T> onCallbackLoaded = null
-            , Action onCallbackCompleted = null) where T : Object
+            , Action<Object> onCallbackLoaded = null
+            , Action onCallbackCompleted = null)
         {
-            await UniTask.WaitUntil(() => _addressableSystem.IsInitialize);
-
             if (labelReference == null)
             {
                 DeLogHandler.DeLogInvalidLabelException(AddressableMonoBehavior.Setting.GetExceptionType);
                 return;
             }
 
-            try
-            {
-                if (_addressableSystem.LoadedLabelHandlesMap.TryGetValue(labelReference, out var existingHandleObj))
-                {
-                    // 이미 로드된 경우
-                    DeLog.Log($"Already loaded '{labelReference.labelString}'");
-                    var existingHandle = (AsyncOperationHandle<IList<T>>)existingHandleObj;
-                    InvokeExistingAssets(existingHandle, onCallbackLoaded);
-                    onCallbackCompleted?.Invoke();
-                    return;
-                }
-
-                if (!_addressableSystem.LabelLocationMap.TryGetValue(labelReference.labelString, out var resourceLocations))
-                {
-                    DeLog.LogError($"No resource locations found for the given label. '{labelReference}'");
-                    return;
-                }
-
-                var loadAssetsHandle = Addressables.LoadAssetsAsync<T>(resourceLocations, asset => { onCallbackLoaded?.Invoke(asset); });
-
-                _addressableSystem.LoadedLabelHandlesMap[labelReference] = loadAssetsHandle;
-
-                while (!loadAssetsHandle.IsDone)
-                {
-                    onProgress?.Invoke(loadAssetsHandle.PercentComplete);
-                    await UniTask.Yield();
-                }
-
-                await loadAssetsHandle.ToUniTask();
-                await UniTask.Yield();
-                onProgress?.Invoke(loadAssetsHandle.PercentComplete);
-
-                onCallbackCompleted?.Invoke();
-            }
-            catch (Exception exception)
-            {
-                DeLogHandler.DeLogException(exception, AddressableMonoBehavior.Setting.GetExceptionType);
-            }
-        }
-
-        private void InvokeExistingAssets<T>(AsyncOperationHandle<IList<T>> existingHandle, Action<T> onCallbackLoaded) where T : Object
-        {
-            if (existingHandle.Status == AsyncOperationStatus.Succeeded)
-            {
-                foreach (var asset in existingHandle.Result)
-                {
-                    onCallbackLoaded?.Invoke(asset);
-                }
-            }
-        }
-
-        #endregion
-
-        #region Load Asset - Singly
-        
-        public async UniTask LoadAssetAsync<T>(AddressableKey key
-            , Action<float> onProgress = null
-            , Action<T> onCallbackLoaded = null
-            , Action onCallbackCompleted = null) where T : Object
-        {
             await UniTask.WaitUntil(() => _addressableSystem.IsInitialize);
-
-            try
-            {
-                if (_addressableSystem.LoadedKeyHandlesMap.TryGetValue(key, out var existingHandleObj))
-                {
-                    // 이미 로드된 경우
-                    DeLog.Log($"Already loaded '{key}'");
-                    var existingHandle = (AsyncOperationHandle<T>)existingHandleObj;
-                    onCallbackLoaded?.Invoke(existingHandle.Result);
-                    onCallbackCompleted?.Invoke();
-                    return;
-                }
-
-                if (!_addressableSystem.KeyLocationMap.TryGetValue(key, out var resourceLocation))
-                {
-                    DeLog.LogError($"No resource locations found for the given AddressableKey. '{key}'");
-                    return;
-                }
-
-                var loadAssetHandle = Addressables.LoadAssetAsync<T>(resourceLocation);
-                _addressableSystem.LoadedKeyHandlesMap[key] = loadAssetHandle;
-
-                while (!loadAssetHandle.IsDone)
-                {
-                    onProgress?.Invoke(loadAssetHandle.PercentComplete);
-                    await UniTask.Yield();
-                }
-
-                var asset = await loadAssetHandle.ToUniTask();
-                await UniTask.Yield();
-                onProgress?.Invoke(loadAssetHandle.PercentComplete);
-
-                onCallbackLoaded?.Invoke(asset);
-                onCallbackCompleted?.Invoke();
-            }
-            catch (Exception exception)
-            {
-                DeLogHandler.DeLogException(exception, AddressableMonoBehavior.Setting.GetExceptionType);
-            }
+            await LoadAssetsAsyncInternal(new List<AssetLabelReference> { labelReference }, onProgress, onCallbackLoaded, onCallbackCompleted);
         }
 
-        public async UniTask LoadAssetAsync<T>(string key
+        /// <summary>
+        /// Asynchronously loads assets based on a list of AssetLabelReferences.
+        /// Provides progress updates and invokes callbacks when assets are loaded and completed.
+        /// </summary>
+        /// <param name="labelReferences">The list of label references identifying the assets to load.</param>
+        /// <param name="onProgress">Callback to invoke with the loading progress (0 to 1).</param>
+        /// <param name="onCallbackLoaded">Callback to invoke when an asset is loaded.</param>
+        /// <param name="onCallbackCompleted">Callback to invoke when all assets are loaded.</param>
+        public async UniTask LoadAssetsAsync(List<AssetLabelReference> labelReferences
             , Action<float> onProgress = null
-            , Action<T> onCallbackLoaded = null
-            , Action onCallbackCompleted = null) where T : Object
+            , Action<Object> onCallbackLoaded = null
+            , Action onCallbackCompleted = null)
         {
-            await UniTask.WaitUntil(() => _addressableSystem.IsInitialize);
-
-            if (string.IsNullOrEmpty(key))
+            if (labelReferences == null || labelReferences.Count == 0)
             {
-                DeLog.LogError("Invalid key provided.");
+                DeLogHandler.DeLogInvalidLabelException(AddressableMonoBehavior.Setting.GetExceptionType);
                 return;
             }
 
+            await UniTask.WaitUntil(() => _addressableSystem.IsInitialize);
+            await LoadAssetsAsyncInternal(labelReferences, onProgress, onCallbackLoaded, onCallbackCompleted);
+        }
+
+        /// <summary>
+        /// Internal method that handles the loading of assets based on a list of label references.
+        /// Tracks progress and invokes callbacks as assets are loaded.
+        /// </summary>
+        /// <param name="labelReferences">The list of label references identifying the assets to load.</param>
+        /// <param name="onProgress">Callback to invoke with the overall loading progress (0 to 1).</param>
+        /// <param name="onCallbackLoaded">Callback to invoke when an asset is loaded.</param>
+        /// <param name="onCallbackCompleted">Callback to invoke when all assets are loaded.</param>
+        private async UniTask LoadAssetsAsyncInternal(List<AssetLabelReference> labelReferences
+            , Action<float> onProgress = null
+            , Action<Object> onCallbackLoaded = null
+            , Action onCallbackCompleted = null)
+        {
             try
             {
-                if (_addressableSystem.LoadedStringKeyHandlesMap.TryGetValue(key, out var existingHandleObj))
+                int totalResourcesToLoad = 0;
+                foreach (var labelReference in labelReferences)
                 {
-                    // 이미 로드된 경우
-                    DeLog.Log($"Already loaded '{key}'");
-                    var existingHandle = (AsyncOperationHandle<T>)existingHandleObj;
-                    onCallbackLoaded?.Invoke(existingHandle.Result);
-                    onCallbackCompleted?.Invoke();
-                    return;
+                    if (_addressableSystem.LabelAssetKeyLocationMap.TryGetValue(labelReference.labelString, out var resourceKvps))
+                    {
+                        totalResourcesToLoad += resourceKvps.Count;
+                    }
                 }
 
-                var loadAssetHandle = Addressables.LoadAssetAsync<T>(key);
-                _addressableSystem.LoadedStringKeyHandlesMap[key] = loadAssetHandle;
-
-                while (!loadAssetHandle.IsDone)
+                int loadedResourceCount = 0;
+                foreach (var labelReference in labelReferences)
                 {
-                    onProgress?.Invoke(loadAssetHandle.PercentComplete);
-                    await UniTask.Yield();
+                    if (!_addressableSystem.LabelAssetKeyLocationMap.TryGetValue(labelReference.labelString, out var resourceKvps))
+                    {
+                        continue;
+                    }
+
+                    if (!_addressableSystem.LabelAssetHandleMap.ContainsKey(labelReference.labelString))
+                    {
+                        _addressableSystem.LabelAssetHandleMap[labelReference.labelString] =
+                            new List<AsyncOperationHandle<Object>>();
+                    }
+                    
+                    foreach (var resourceKvp in resourceKvps)
+                    {
+                        try
+                        {
+                            await LoadAssetAsync(resourceKvp
+                                , labelReference
+                                , progress =>
+                            {
+                                var overallProgress = (float)loadedResourceCount / totalResourcesToLoad + progress / totalResourcesToLoad;
+                                onProgress?.Invoke(overallProgress);
+                            }
+                                , onCallbackLoaded
+                                , () =>
+                            {
+                                loadedResourceCount++;
+                                if (loadedResourceCount == totalResourcesToLoad)
+                                {
+                                    onCallbackCompleted?.Invoke();
+                                }
+                            });
+                        }
+                        catch (InvalidOperationException ioEx)
+                        {
+                            DeLogHandler.DeLogException(ioEx, AddressableMonoBehavior.Setting.GetExceptionType);
+                        }
+                        catch (Exception exception)
+                        {
+                            DeLogHandler.DeLogException(exception, AddressableMonoBehavior.Setting.GetExceptionType);
+                        }
+                    }
                 }
-
-                var asset = await loadAssetHandle.ToUniTask();
-                await UniTask.Yield();
-                onProgress?.Invoke(loadAssetHandle.PercentComplete);
-
-                onCallbackLoaded?.Invoke(asset);
-                onCallbackCompleted?.Invoke();
             }
             catch (Exception exception)
             {
@@ -180,6 +143,56 @@ namespace ActFitFramework.Standalone.AddressableSystem
             }
         }
 
-        #endregion
+        /// <summary>
+        /// Loads a single asset asynchronously based on a resource key-value pair.
+        /// Tracks progress and invokes callbacks when the asset is loaded.
+        /// </summary>
+        /// <param name="resourceKvp">The key-value pair representing the resource to load.</param>
+        /// <param name="labelKey">The label reference associated with the resource.</param>
+        /// <param name="onProgress">Callback to invoke with the loading progress of the asset (0 to 1).</param>
+        /// <param name="onCallbackLoaded">Callback to invoke when the asset is loaded.</param>
+        /// <param name="onCallbackCompleted">Callback to invoke when the asset has finished loading.</param>
+        private async UniTask LoadAssetAsync(ResourceKvp resourceKvp
+            , AssetLabelReference labelKey
+            , Action<float> onProgress = null
+            , Action<Object> onCallbackLoaded = null
+            , Action onCallbackCompleted = null)
+        {
+            try
+            {
+                if (_addressableSystem.AssetHandleMap.TryGetValue(resourceKvp.AddressableKey, out var handle))
+                {
+                    DeLog.Log($"Already Loaded Assets : {resourceKvp.AddressableKey.ToString()}");
+                    onCallbackLoaded?.Invoke(handle.Result);
+                    onCallbackCompleted?.Invoke();
+                    return;
+                }
+
+                var loadAssetHandle = Addressables.LoadAssetAsync<Object>(resourceKvp.ResourceLocation);
+
+                while (!loadAssetHandle.IsDone)
+                {
+                    onProgress?.Invoke(loadAssetHandle.PercentComplete);
+                    await UniTask.Yield();
+                }
+
+                await loadAssetHandle.ToUniTask();
+                onProgress?.Invoke(loadAssetHandle.PercentComplete);
+
+                _addressableSystem.AssetHandleMap.TryAdd(resourceKvp.AddressableKey, loadAssetHandle);
+                _addressableSystem.LabelAssetHandleMap[labelKey.labelString].Add(loadAssetHandle);
+                
+                onCallbackLoaded?.Invoke(loadAssetHandle.Result);
+                onCallbackCompleted?.Invoke();
+            }
+            catch (InvalidOperationException ioEx)
+            {
+                DeLogHandler.DeLogException(ioEx, AddressableMonoBehavior.Setting.GetExceptionType);
+            }
+            catch (Exception exception)
+            {
+                DeLogHandler.DeLogException(exception, AddressableMonoBehavior.Setting.GetExceptionType);
+            }
+        }
     }
 }

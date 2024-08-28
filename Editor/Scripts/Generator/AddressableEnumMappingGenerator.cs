@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
 
-namespace ActFitFramework.Standalone.AddressableSystem
+namespace ActFitFramework.Standalone.AddressableSystem.Editor
 {
     /// <summary>
     /// Generates a C# enum file based on previously generated addressable key-value JSON data.

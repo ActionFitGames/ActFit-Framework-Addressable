@@ -3,18 +3,23 @@ using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
 using UnityEditor.Callbacks;
-using UnityEditor.Compilation;
 using UnityEngine;
 
-namespace ActFitFramework.Standalone.AddressableSystem
+namespace ActFitFramework.Standalone.AddressableSystem.Editor
 {
-    public class ModifyPostProcessor
+    public static class ModifyPostProcessor
     {
         private const string AssetPath = "Assets/AddressableSystemSetting.asset";
+        private const string EditorReloadFlagKey = "AddressableSystem_EditorReloadFlag";
         
         [InitializeOnLoadMethod]
         static void OnInitializeDelayCall()
         {
+            if (EditorApplication.isPlayingOrWillChangePlaymode || Application.isPlaying)
+            {
+                return;
+            }
+            
             var setting = AssetDatabase.LoadAssetAtPath<AddressableSettingSO>(AssetPath);
             
             if (!setting)
@@ -31,7 +36,7 @@ namespace ActFitFramework.Standalone.AddressableSystem
             }
             
             Debug.Log("[Addressable Modify-Post-Processor] Constructor called, PostProcess enabled.");
-
+            
             var addressableSettings = AddressableAssetSettingsDefaultObject.Settings;
             if (addressableSettings)
             {
@@ -41,7 +46,6 @@ namespace ActFitFramework.Standalone.AddressableSystem
         
         private static void ForceReimportAsset(string assetPath)
         {
-
             AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceUpdate);
             AssetDatabase.Refresh();
             
@@ -66,12 +70,27 @@ namespace ActFitFramework.Standalone.AddressableSystem
             
             AddressableJsonMappingGenerator.GenerateJsonKeyValueData();
             AddressableEnumMappingGenerator.GenerateEnumMappingData();
+            EditorPrefs.SetBool(EditorReloadFlagKey, true);
         }
 
         [DidReloadScripts]
         private static void OnScriptsReloaded()
         {
-            EditorApplication.delayCall += AddressableCacheGenerator.GenerateAddressableCacheSO;
+            if (EditorApplication.isPlayingOrWillChangePlaymode || Application.isPlaying)
+            {
+                return;
+            }
+            
+            if (!EditorPrefs.GetBool(EditorReloadFlagKey, false))
+            {
+                return;
+            }
+            
+            EditorApplication.delayCall += () =>
+            {
+                AddressableCacheGenerator.GenerateAddressableCacheSO();
+                EditorPrefs.SetBool(EditorReloadFlagKey, false);
+            };
         }
 
         private static bool CanWriteAccess(AddressableAssetSettings.ModificationEvent evt)

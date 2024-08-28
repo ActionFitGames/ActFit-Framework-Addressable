@@ -39,7 +39,7 @@ namespace ActFitFramework.Standalone.AddressableSystem
                 return;
             }
 
-            var gameObj = new GameObject("SYSTEM [Addressables]");
+            var gameObj = new GameObject("Addressable System");
             _instance = gameObj.AddComponent<AddressableMonoBehavior>();
         }
 
@@ -75,9 +75,36 @@ namespace ActFitFramework.Standalone.AddressableSystem
 
             onInitializeInvoker.Invoke(true);
         }
-
-#if UNITY_EDITOR
         
+#if UNITY_EDITOR
+        [UnityEditor.InitializeOnLoadMethod]
+        private static void SetCustomIcon()
+        {
+            if (!UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                return;
+            }
+            
+            var iconPath = "Assets/ActFit-Framework-Addressable/Editor/Assets/ActFitFrameworkIcon.png";
+            var icon = UnityEditor.AssetDatabase.LoadAssetAtPath<Texture2D>(iconPath);
+            if (icon != null)
+            {
+                UnityEditor.EditorApplication.hierarchyWindowItemOnGUI += (instanceID, selectionRect) =>
+                {
+                    var obj = UnityEditor.EditorUtility.InstanceIDToObject(instanceID) as GameObject;
+                    if (obj != null && obj.GetComponent<AddressableMonoBehavior>() != null)
+                    {
+                        // 이 위치에 아이콘을 그립니다. 기본 아이콘 영역에 가깝게 조정할 수 있습니다.
+                        var iconRect = new Rect(selectionRect.xMin - 21, selectionRect.yMin - 1, 20, 18);
+                        GUI.DrawTexture(iconRect, icon);
+                    }
+                };
+            }
+            else
+            {
+                Debug.LogError($"Icon not found at path: {iconPath}");
+            }
+        }
 #endif
     }
 }

@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace ActFitFramework.Standalone.AddressableSystem
+namespace ActFitFramework.Standalone.AddressableSystem.Editor
 {
     public static class AddressableDefineSymbols
     {

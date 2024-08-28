@@ -2,7 +2,7 @@
 using System.IO;
 using UnityEngine;
 
-namespace ActFitFramework.Standalone.AddressableSystem
+namespace ActFitFramework.Standalone.AddressableSystem.Editor
 {
     public static class EditorExtensions
     {

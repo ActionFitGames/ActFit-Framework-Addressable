@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
 
-namespace ActFitFramework.Standalone.AddressableSystem
+namespace ActFitFramework.Standalone.AddressableSystem.Editor
 {
     /// <summary>
     /// A generator class that creates and updates Addressable Cache Scriptable Objects based on the Addressable system configuration.

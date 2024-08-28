@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace ActFitFramework.Standalone.AddressableSystem
+namespace ActFitFramework.Standalone.AddressableSystem.Editor
 {
     [CustomEditor(typeof(AddressableSettingSO))]
     public class AddressableSettingSOEditor : UnityEditor.Editor

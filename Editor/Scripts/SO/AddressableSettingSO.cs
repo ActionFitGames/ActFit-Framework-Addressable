@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace ActFitFramework.Standalone.AddressableSystem
+namespace ActFitFramework.Standalone.AddressableSystem.Editor
 {
     public class AddressableSettingSO : ScriptableObject
     {
