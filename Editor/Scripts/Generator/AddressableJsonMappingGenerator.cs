@@ -99,7 +99,7 @@ namespace ActFitFramework.Standalone.AddressableSystem.Editor
                 var assetTypeString = assetEntry.MainAssetType.ToString();
                 var assetPrimaryKey = assetEntry.address;
 
-                var mappingKey = assetTypeString + assetPrimaryKey;
+                var mappingKey = GenerateMappingEnumKey(assetTypeString, assetPrimaryKey);
 
                 if (!mappingData.ContainsKey(mappingKey))
                 {
