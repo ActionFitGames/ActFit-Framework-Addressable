@@ -1,6 +1,7 @@
 
 using System.Collections.Generic;
 using AYellowpaper.SerializedCollections;
+using UnityEditor;
 using UnityEngine;
 
 namespace ActFitFramework.Standalone.AddressableSystem
@@ -21,10 +22,10 @@ namespace ActFitFramework.Standalone.AddressableSystem
                                                                   "  -- This is generate Enum 'AddressableKey'\n" +
                                                                   "  -- Runtime, Enum Key Mapping to IResourceLocation\n";
         
-        public List<string> LabelStrings;
+        [ReadOnly] public List<string> LabelStrings;
         
-        [SerializedDictionary("[NoEdit] Unique Composite Key", "[Enum] Addressable Key")]
-        public SerializedDictionary<string, int> AssetKeysMap;
+        [SerializedDictionary("[NoEdit] Unique Composite Key", "[Const] AddrKey")]
+        [ReadOnly] public SerializedDictionary<string, int> AssetKeysMap;
         
         /// <summary> Implements 'ICacheProvider' </summary>
         public List<string> GetLabelStrings => LabelStrings;
@@ -32,55 +33,20 @@ namespace ActFitFramework.Standalone.AddressableSystem
 
         #endregion
 
-
-
 #if UNITY_EDITOR
-        // private void OnValidate()
-        // {
-        //     if (LabelLocationsMap == null || LabelLocationsMap.Count == 0)
-        //     {
-        //         Debug.LogWarning("LabelLocationsMap is empty. Please regenerate the cache.");
-        //         return;
-        //     }
-        //
-        //     var actualLabels = GetActualLabels();
-        //
-        //     foreach (var actualLabel in actualLabels)
-        //     {
-        //         var cachedEntry = LabelLocationsMap.FirstOrDefault(entry => entry.Key.labelString == actualLabel);
-        //
-        //         if (cachedEntry.Key == null)
-        //         {
-        //             Debug.LogError($"The label '{actualLabel}' exists in the Addressable system but is missing from the cache.\n" +
-        //                            " Please update the AddressableCacheSO.");
-        //             return;
-        //         }
-        //
-        //         var actualLocations = GetActualResourceLocations(actualLabel);
-        //
-        //         if (cachedEntry.Value.Count != actualLocations.Count)
-        //         {
-        //             Debug.LogError($"Mismatch in resource locations for label '{actualLabel}'.\n" +
-        //                            $"Cached: {cachedEntry.Value?.Count ?? 0}, Actual: {actualLocations.Count}\n." +
-        //                            "Please update the AddressableCacheSO.");
-        //             return;
-        //         }
-        //     }
-        // }
-        //
-        // private List<string> GetActualLabels()
-        // {
-        //     var settings = AddressableAssetSettingsDefaultObject.Settings;
-        //     return settings.GetLabels().ToList();
-        // }
-        //
-        // private IList<IResourceLocation> GetActualResourceLocations(string label)
-        // {
-        //     var locationHandle = Addressables.LoadResourceLocationsAsync(label, typeof(object));
-        //     locationHandle.WaitForCompletion();
-        //
-        //     return locationHandle.Result;
-        // }
+        // Custom PropertyDrawer to make fields read-only in Inspector
+        [CustomPropertyDrawer(typeof(ReadOnlyAttribute))]
+        public class ReadOnlyDrawer : PropertyDrawer
+        {
+            public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+            {
+                GUI.enabled = false; // Disable editing
+                EditorGUI.PropertyField(position, property, label, true);
+                GUI.enabled = true;  // Re-enable editing
+            }
+        }
+
+        public class ReadOnlyAttribute : PropertyAttribute { }
 #endif
     }
 }

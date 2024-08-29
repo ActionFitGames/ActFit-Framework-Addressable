@@ -1,5 +1,4 @@
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using AYellowpaper.SerializedCollections;
@@ -83,20 +82,34 @@ namespace ActFitFramework.Standalone.AddressableSystem.Editor
 
             var jsonData = File.ReadAllText(JsonAssetPath);
             var entryDataMap = JsonConvert.DeserializeObject<SerializedDictionary<string, string>>(jsonData);
+
+            // 불러올 두 번째 JSON 파일 경로
+            var integerDataPath = JsonIntegerAssetPath;
+            if (!File.Exists(integerDataPath))
+            {
+                Debug.LogError("Integer Key-Value Data file not found. Ensure the JSON file exists at the specified path.");
+                return null;
+            }
+
+            // 두 번째 JSON 파일에서 데이터를 읽어옴
+            var integerJsonData = File.ReadAllText(integerDataPath);
+            var integerEntryDataMap = JsonConvert.DeserializeObject<Dictionary<string, int>>(integerJsonData);
+
             var newKvp = new SerializedDictionary<string, int>();
 
             foreach (var kvp in entryDataMap)
             {
                 var primaryKey = kvp.Key;
-                var enumValue = kvp.Value;
+                var stringValue = kvp.Value;
 
-                if (Enum.TryParse(enumValue, out int addressableKey))
+                // 두 번째 JSON 파일에서 해당 primaryKey에 대한 정수 값을 가져옴
+                if (integerEntryDataMap.TryGetValue(stringValue, out int integerValue))
                 {
-                    newKvp[primaryKey] = addressableKey;
+                    newKvp[primaryKey] = integerValue;
                 }
                 else
                 {
-                    Debug.LogError($"Failed to parse enum key '{enumValue}' for PrimaryKey '{primaryKey}'.");
+                    Debug.LogError($"Failed to find matching integer value for PrimaryKey '{primaryKey}'.");
                     return null;
                 }
             }

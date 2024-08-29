@@ -69,7 +69,7 @@ namespace ActFitFramework.Standalone.AddressableSystem.Editor
             }
             
             AddressableJsonMappingGenerator.GenerateJsonKeyValueData();
-            AddressableEnumMappingGenerator.GenerateEnumMappingData();
+            AddressableConstMappingGenerator.GenerateConstMappingData();
             EditorPrefs.SetBool(EditorReloadFlagKey, true);
         }
 

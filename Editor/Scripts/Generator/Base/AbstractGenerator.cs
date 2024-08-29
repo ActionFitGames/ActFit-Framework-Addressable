@@ -21,6 +21,7 @@ namespace ActFitFramework.Standalone.AddressableSystem.Editor
 
         protected const string RootAssetPath = "Assets/Games/";
         protected const string JsonAssetPath = RootAssetPath + "Data/Addressables/JsonKVPData.json";
+        protected const string JsonIntegerAssetPath = RootAssetPath + "Data/Addressables/JsonKVPIntegerData.json";
         protected virtual string AssetPath { get; set; }
         
         #endregion
@@ -31,8 +32,7 @@ namespace ActFitFramework.Standalone.AddressableSystem.Editor
         /// Initiates the generation process. Optionally enables the use of actual keys as enum symbols.
         /// Refreshes the AssetDatabase after generation.
         /// </summary>
-        /// <param name="isEnumDefineSymbol">If true, enables actual keys as enum symbols.</param>
-        protected void Generate(bool isEnumDefineSymbol = false)
+        protected void Generate()
         {
             if (!GetAddressableSetting())
             {
@@ -40,11 +40,6 @@ namespace ActFitFramework.Standalone.AddressableSystem.Editor
             }
 
             GenerateProcess();
-
-            if (isEnumDefineSymbol)
-            {
-                // AddressableDefineSymbols.EnableUseActualKey();
-            }
             
             AssetDatabase.Refresh();
         }
