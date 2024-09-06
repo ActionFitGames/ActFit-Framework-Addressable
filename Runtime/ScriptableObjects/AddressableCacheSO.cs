@@ -45,8 +45,7 @@ namespace ActFitFramework.Standalone.AddressableSystem
                 GUI.enabled = true;  // Re-enable editing
             }
         }
-
-        public class ReadOnlyAttribute : PropertyAttribute { }
 #endif
+        public class ReadOnlyAttribute : PropertyAttribute { }
     }
 }
